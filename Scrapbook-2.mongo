@@ -1,0 +1,29 @@
+db.users.find({
+    email: 'dlokhanova@inbox.ru'
+})
+
+db.clientErrors.find({
+    userId: '5f8f15bde3996b24974e01cb',
+    createdAt: {
+        $gte: ISODate('2020-12-07T15:05:10.548Z')
+    }
+})
+
+
+
+
+db.playerGamesLog.find({
+    userId: '5f8f15bde3996b24974e01cb',
+    createdAt: {
+        $gte: ISODate('2020-12-07T15:05:10.548Z')
+    }
+}, {
+    roomRefId: 1,
+    afkRate: 1,
+    tokens:1,
+    place: 1,
+    addedRating: 1,
+    "createdAt": 1
+}).sort({
+    createdAt: -1
+}).pretty()
