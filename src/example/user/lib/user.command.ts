@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common'
 import { EventBus } from '../../../core/cqrs/bus/event.bus'
+import { CommandHandler } from '../../../core/cqrs/decorators/commandHandler.decorator'
+import { UserCommandCqrs } from '../shared/user.command.shared'
 import { UserDb } from './models/user.db'
 import { UserEvent } from './user.event'
 import { UserRepo } from './user.repo'
 
+@CommandHandler({ publicApi: UserCommandCqrs })
 @Injectable()
-export class UserCommand {
+export class UserCommand implements UserCommandCqrs {
   constructor(
     public repo: UserRepo,
     public eventBus: EventBus<UserEvent>,
@@ -25,7 +28,7 @@ export class UserCommand {
     }
 
     this.eventBus.publish({
-      $type: 'User.LoggedIn',
+      __type: 'User.LoggedIn',
       id: user.id,
     })
 
@@ -45,7 +48,7 @@ export class UserCommand {
     this.repo.data.push(user)
 
     this.eventBus.publish({
-      $type: 'User.Registered',
+      __type: 'User.Registered',
       id: user.id,
     })
 

@@ -3,11 +3,11 @@ import { EventBus } from '../../../core/cqrs'
 
 export type UserEvent =
   | {
-      $type: 'User.LoggedIn'
+      __type: 'User.LoggedIn'
       id: string
     }
   | {
-      $type: 'User.Registered'
+      __type: 'User.Registered'
       id: string
     }
 

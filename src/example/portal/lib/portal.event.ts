@@ -1,20 +1,21 @@
 import { Injectable } from '@nestjs/common'
 import { EventBus } from '../../../core/cqrs/bus/event.bus'
-import { UserCommand, UserQuery } from '../../user'
+import { UserCommandCqrs } from '../../user/shared/user.command.shared'
+import { UserQueryCqrs } from '../../user/shared/user.query.shared'
 
 export type PortalEvent = {
-  $type: 'Portal.FinishedJob'
+  __type: 'Portal.FinishedJob'
 }
 
 @Injectable()
 export class PortalEventListener {
   constructor(
     private eventBus: EventBus<PortalEvent>,
-    private userQuery: UserQuery,
-    private userCommand: UserCommand,
+    private userQuery: UserQueryCqrs,
+    private userCommand: UserCommandCqrs,
   ) {}
 
-  async onModuleInit() {
+  async onApplicationBootstrap() {
     this.eventBus.subscribe(async () => {})
 
     setTimeout(async () => {

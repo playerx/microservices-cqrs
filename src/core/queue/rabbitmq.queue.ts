@@ -2,6 +2,9 @@ import * as amqp from 'amqp-connection-manager'
 import { ConfirmChannel } from 'amqplib'
 import { Observable, Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
+import { buildRouteKey } from '../utility/routeKey/buildRouteKey'
+import { IRouteKeyParts } from '../utility/routeKey/types'
+
 import { PublishProps, Queue, QueueItem } from './types'
 
 interface Options {
@@ -13,6 +16,12 @@ interface Options {
   additionalListenPrefixes?: string[]
 }
 
+// for merging with partial messageIdParts to get routing keys
+const wildcardMessageId: IRouteKeyParts = {
+  busType: '*' as any,
+  serviceName: '*',
+  functionName: '#',
+}
 export class RabbitMQQueue<TMessage> implements Queue {
   message$: Observable<QueueItem<TMessage>>
   unsubscribe$ = new Subject()
@@ -209,6 +218,16 @@ export class RabbitMQQueue<TMessage> implements Queue {
     )
 
     return result
+  }
+
+  async subscribe(messageIdParts: Partial<IRouteKeyParts>) {
+    this.channel.addSetup((x: ConfirmChannel) => {
+      x.bindQueue(
+        this.subscribeQueueName,
+        this.options.publishExchangeName,
+        buildRouteKey({ ...wildcardMessageId, ...messageIdParts }),
+      )
+    })
   }
 
   dispose() {

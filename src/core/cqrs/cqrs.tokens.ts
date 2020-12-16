@@ -5,3 +5,9 @@ export const CqrsTokens = {
   QueueOptions: Symbol('Queue Options'),
   Queue: Symbol('Queue'),
 }
+
+export enum CqrsBusType {
+  Command = 'Command',
+  Query = 'Query',
+  Event = 'Event',
+}

@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs'
+import { IMessageIdParts } from '../utility/routeKey/types'
 
 export interface Queue {
   name: string
@@ -7,6 +8,8 @@ export interface Queue {
   unsubscribe$: Observable<any>
 
   publish<TResult>(props: PublishProps<any>): Promise<TResult>
+  /** for adding new messageId subscriptions */
+  subscribe(args: Partial<IMessageIdParts>): Promise<void> | void
 
   dispose(): void
 }
@@ -15,7 +18,7 @@ export interface PublishProps<T> {
   route: string
   message: T
 
-  metadata: Metadata
+  metadata: TMetadata
 
   rpc?: {
     enabled: boolean
@@ -27,17 +30,17 @@ export interface QueueItem<T> {
   route: string
   message: T
 
-  metadata: Metadata
+  metadata: TMetadata
 
   // used with correlationId when its RPC
   replyTo?: string
   correlationId?: string
 
   complete: (isSuccess?: boolean) => void
-  sendReply(result: any, metadata: Metadata): Promise<void>
+  sendReply(result: any, metadata: TMetadata): Promise<void>
 }
 
-export type Metadata = { [key: string]: string | Metadata }
+export type TMetadata = { [key: string]: string | TMetadata }
 
 // export interface PendingItem<T> {
 //   message: T
@@ -47,6 +50,11 @@ export type Metadata = { [key: string]: string | Metadata }
 //   sendReplyAction(result: any): Promise<void>
 // }
 
-export type Message<T extends Message<T>> = {
-  $type: T['$type']
-}
+export type TPayload<T extends TPayload<T>> =
+  | Record<string, T>
+  | Array<T>
+  | string
+  | boolean
+  | number
+  | null
+  | undefined
