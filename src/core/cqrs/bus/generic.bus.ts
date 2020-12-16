@@ -40,7 +40,7 @@ export abstract class GenericBus<
     metadata?: TMetadata,
   ) {
     return this.queue.publish<TResult>({
-      route: buildRouteKey(route),
+      route: buildRouteKey({ ...route, busType: this.__type }),
       message: command,
       metadata: {
         ...metadata,

@@ -49,15 +49,22 @@ export class HandlerDiscoveryService implements OnModuleInit {
         ? QUERY_HANDLER_METADATA
         : COMMAND_HANDLER_METADATA
 
-    const mapContents = services.map<[string, any]>(s => {
-      const instance = this.moduleRef.get(s as any, { strict: false })
-      const metadata: IHandlerPrivateMetadata = Reflect.getMetadata(
-        metadataKey,
-        instance.constructor,
-      )
+    const mapContents: [string, any][] = services
+      .map<[string, any] | undefined>(s => {
+        const instance = this.moduleRef.get(s as any, {
+          strict: false,
+        })
+        if (!instance?.constructor) {
+          return undefined
+        }
+        const metadata: IHandlerPrivateMetadata = Reflect.getMetadata(
+          metadataKey,
+          instance.constructor,
+        )
 
-      return [metadata.publicApi.name, instance]
-    })
+        return [metadata.publicApi.name, instance]
+      })
+      .filter(x => x !== undefined) as [string, any]
 
     const map = new Map(mapContents)
     generateHandlers(map, bus)

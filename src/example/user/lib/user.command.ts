@@ -14,9 +14,8 @@ export class UserCommand implements UserCommandCqrs {
     public eventBus: EventBus<UserEvent>,
   ) {}
 
-  async login(props: { username: string; password: string }) {
+  async login(props: { username: string; password: string }, meta?) {
     const { username, password } = props
-
     const user = this.repo.data.find(x => x.username === username)
     if (!user) {
       return null
@@ -35,7 +34,10 @@ export class UserCommand implements UserCommandCqrs {
     return user.id
   }
 
-  async register(props: { firstName: string; lastName: string }) {
+  async register(
+    props: { firstName: string; lastName: string },
+    meta?,
+  ) {
     const { firstName, lastName } = props
 
     const user: UserDb = {

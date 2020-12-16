@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { EventBus } from '../../../core/cqrs/bus/event.bus'
+import { UserCommand } from '../../user'
 import { UserCommandCqrs } from '../../user/shared/user.command.shared'
 import { UserQueryCqrs } from '../../user/shared/user.query.shared'
 

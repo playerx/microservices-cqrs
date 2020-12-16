@@ -16,8 +16,6 @@ export class UserModule {
       imports: [
         CqrsModule.forRoot({
           queue: options.queue,
-          commandServices: [],
-          queryServices: [],
         }),
       ],
     }
